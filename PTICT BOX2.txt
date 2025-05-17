@@ -1,8 +1,8 @@
 
-local CT3backup = 0
-local CDP9backup = 0
-local CDP10backup = 0
-local CDP12backup = 0
+local CT3backup
+local CDP9backup
+local CDP10backup
+local CDP12backup
 
 local LineToken = "LineToken"
 local https = require("https")
@@ -43,6 +43,10 @@ function getMessageUrl(lineMessage)
     getHttpsUrl(url, headers, reqMess)
 end
 
+function round(x)
+  return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
+end
+
 function PTICT2.main()
   year = os.date("%Y")
   month = os.date("%m")
@@ -55,54 +59,58 @@ function PTICT2.main()
   local dtime2 = dtime
     -- print ("datetime = "..dtime)
 -- Check condition CT3
-  local CT3 = addr_getword("@Power_total_CT3")
-  if CT3 ~= CT3backup and CT3 < 1 then
+  local CT3 = addr_getint("@Power_total_CT3",0,2)*0.00001
+  if round(CT3) ~= CT3backup and round(CT3) < 1 then
     strMessage = {
-        ["to"]="Groupid",
+        ["to"]="GroupId",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CT3\n DateTime :"..dtime2.."\n ALARM: STOP"
             }}
       }
+    CT3backup = round(CT3)
     getMessageUrl(strMessage)
     print("CT3 Alarm value is "..CT3)
   end 
 -- Check condition CDP9
-  local CDP9 = addr_getword("@Power_total_CDP9")
-  if CDP9 ~= CDP9backup and CDP9 < 1 then
+  local CDP9 = addr_getint("@Power_total_CDP9",0,2)*0.00001
+  if round(CDP9) ~= CDP9backup and round(CDP9) < 1 then
     strMessage = {
-        ["to"]="Groupid",
+        ["to"]="GroupId",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CDP9\n DateTime :"..dtime2.."\n ALARM: STOP"
             }}
       }
+    CDP9backup = round(CDP9)
     getMessageUrl(strMessage)
     print("CDP9 Alarm value is "..CDP9)
   end 
 -- Check condition CDP10
-  local CDP10 = addr_getword("@Power_total_CDP10")
-  if CDP10 ~= CDP10backup and CDP10 < 1 then
+  local CDP10 = addr_getint("@Power_total_CDP10",0,2)*0.00001
+  if round(CDP10) ~= CDP10backup and round(CDP10) < 1 then
     strMessage = {
-        ["to"]="Groupid",
+        ["to"]="GroupId",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CDP10\n DateTime :"..dtime2.."\n ALARM: STOP"
             }}
       }
+    CDP10backup = round(CDP10)
     getMessageUrl(strMessage)
     print("CDP10 Alarm value is "..CDP10)
   end 
 -- Check condition CDP10
-  local CDP12 = addr_getword("@Power_total_CDP12")
-  if CDP12 ~= CDP12backup and CDP12 < 1 then
+  local CDP12 = addr_getint("@Power_total_CDP12",0,2)*0.00001
+  if round(CDP12) ~= CDP12backup and round(CDP12) < 1 then
     strMessage = {
-        ["to"]="Groupid",
+        ["to"]="GroupId",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CDP12\n DateTime :"..dtime2.."\n ALARM: STOP"
             }}
       }
+    CDP12backup = round(CDP12)
     getMessageUrl(strMessage)
     print("CDP12 Alarm value is "..CDP12)
   end 
