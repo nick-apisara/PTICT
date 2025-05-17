@@ -75,7 +75,7 @@ function PTICT.main()
   local CT2 = addr_getword("@Power_total_CT2")
   if CT2 ~= CT2backup and CT2 < 1 then
     strMessage = {
-        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["to"]="Groupid",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CT2\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -88,7 +88,7 @@ function PTICT.main()
   local CDP11 = addr_getword("@Power_total_CDP11")
   if CDP11 ~= CDP11backup and CDP11 < 1 then
     strMessage = {
-        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["to"]="Groupid",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CDP11\n DateTime :"..dtime2.."\n ALARM: STOP"
