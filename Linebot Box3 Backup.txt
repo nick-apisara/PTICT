@@ -1,0 +1,166 @@
+local tempBit_status_DPM1 = 0
+local tempBit_status_vsdpump = 0 
+local tempWord_Pressure_Vacuum_Atlas_55kW = 0
+local tempWord_pressure_keaser = 0
+local tempWord_pressure_atlas = 0
+
+local LineToken = "LineToken"--PATHUMTHANI GLASS
+
+local https = require("https")
+local json = require("json")
+local ltn12 = require("ltn12")
+
+-- Send http.get request and return response result
+function getHttpsUrl(url,header,reqbody)
+    local body = {}
+    local bodyJson = json.encode(body)
+    local result_table, code, headers, status = https.request{
+        method = "POST",
+        url = url,
+        source = ltn12.source.string(reqbody),
+        headers = header,
+        sink = ltn12.sink.table(body)
+   }
+    --print("code:"..code)
+    if code~= 200 then
+        return
+    else
+        return body
+    end
+end
+
+function wait(seconds)
+    local start = os.time()
+    repeat until os.time() > start + seconds
+end
+
+
+function getMessageUrl(lineMessage)
+    local url = "https://notify-api.line.me/api/notify"
+    local reqMess = "message="..lineMessage
+    local headers = 
+                {
+                        ["Authorization"] = "Bearer "..LineToken,
+                        ["Content-Type"] = "application/x-www-form-urlencoded",
+                        ["Content-Length"] = #reqMess
+                }
+    
+    --print("Get the link:"..url)
+    getHttpsUrl(url, headers, reqMess)
+end
+
+function linenotify.main()
+    year = os.date("%Y")
+    month = os.date("%m")
+    day = os.date("%d")
+    hour = os.date("%H")
+    minute = os.date("%M")
+    second = os.date("%S")
+    dtime = day.."-"..month.."-"..year.." "..hour..":"..minute..":"..second
+    print ("datetime = "..dtime)
+    ------------
+    --check script
+    ------------
+    if hour..":"..minute..":"..second == "08:00:00" then
+        message = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS :\nScript box3 is Working\n**************************'
+        getMessageUrl(message)
+        --print("Script is Working,"..bitValue)
+    elseif hour..":"..minute..":"..second == "17:00:00" then
+        message = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS :\nScript box3 is Working\n**************************'
+        getMessageUrl(message)
+        --print("Script is Working,"..bitValue)
+    end
+    ------------
+    --status_DPM1
+    ------------
+    local bitValue_status_DPM1 = addr_getbit("@status_DPM1");
+    local message_status_DPM1 = ''
+    --print("bitValue_status_DPM1=="..bitValue_status_DPM1)
+    if bitValue_status_DPM1 == 0 and bitValue_status_DPM1 ~= tempBit_status_DPM1 then
+        message_status_DPM1 = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS :\nDPM1(Vacuum Pump) Stop Working\n*************************'
+        getMessageUrl(message_status_DPM1)
+        print("Notification pushed of PATHUMTHANI GLASS DPM1 Alarm,"..bitValue_status_DPM1)
+    elseif bitValue_status_DPM1 == 1 and bitValue_status_DPM1 ~= tempBit_status_DPM1 then
+        message_status_DPM1 = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS :\nDPM1(Vacuum Pump) Start Working\n*************************'
+        getMessageUrl(message_status_DPM1)
+        print("Notification pushed of PATHUMTHANI GLASS DPM1 dismissing,"..bitValue_status_DPM1)
+    end
+    tempBit_status_DPM1 = bitValue_status_DPM1----Prevent monitoring values from continuous being sent to the platform
+    ------------
+    --status_vsdpump
+    ------------
+    local bitValue_status_vsdpump = addr_getbit("@status_vsdpump");
+    local message_status_vsdpump = ''
+    --print("bitValue_status_vsdpump=="..bitValue_status_vsdpump)
+    if bitValue_status_vsdpump == 0 and bitValue_status_vsdpump ~= tempBit_status_vsdpump then
+        message_status_vsdpump = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS :\nVSD Pump AC Stop Working\n*************************'
+        --getMessageUrl(message_status_vsdpump)
+        print("Notification pushed of PATHUMTHANI GLASS VSD Pump AC Alarm,"..bitValue_status_vsdpump)
+    elseif bitValue_status_vsdpump == 1 and bitValue_status_vsdpump ~= tempBit_status_vsdpump then
+        message_status_vsdpump = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS :\nVSD Pump AC Start Working\n*************************'
+       -- getMessageUrl(message_status_vsdpump)
+        print("Notification pushed of PATHUMTHANI GLASS VSD Pump AC dismissing,"..bitValue_status_vsdpump)
+    end
+    tempBit_status_vsdpump = bitValue_status_vsdpump----Prevent monitoring values from continuous being sent to the platform
+    
+    ------------
+    --Pressure_Vacuum_Atlas_55kW
+    ------------
+    if addr_getfloat("@Pressure_Vacuum_Atlas_55kW") ~= nil then
+        wordValue_Pressure_Vacuum_Atlas_55kW = string.format("%.2f",addr_getfloat("@Pressure_Vacuum_Atlas_55kW"))
+        wordValue_Pressure_Vacuum_Atlas_55kW_int = addr_getfloat("@Pressure_Vacuum_Atlas_55kW")
+    end
+    local message_Pressure_Vacuum_Atlas_55kW = ''
+    --print("Pressure_Vacuum_Atlas_55kW_int = ",Pressure_Vacuum_Atlas_55kW_int)
+    if wordValue_Pressure_Vacuum_Atlas_55kW_int < -690 and wordValue_Pressure_Vacuum_Atlas_55kW_int ~= tempWord_Pressure_Vacuum_Atlas_55kW and tempWord_Pressure_Vacuum_Atlas_55kW >= -690 then
+        message_Pressure_Vacuum_Atlas_55kW = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS Pressure_Vacuum_Atlas_55kW Alarm \n************************** \nPressure_Vacuum_Atlas_55kW = '.. wordValue_Pressure_Vacuum_Atlas_55kW..'mbar\n(Min = -690 mbar)'
+        getMessageUrl(message_Pressure_Vacuum_Atlas_55kW)
+        print("Notification Ratchaphruek Hospital pushed of triggering alarm,"..wordValue_Pressure_Vacuum_Atlas_55kW_int)
+    elseif wordValue_Pressure_Vacuum_Atlas_55kW_int > -690 and wordValue_Pressure_Vacuum_Atlas_55kW_int ~= tempWord_Pressure_Vacuum_Atlas_55kW and tempWord_Pressure_Vacuum_Atlas_55kW <= -690 then
+        message_Pressure_Vacuum_Atlas_55kW = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS Pressure_Vacuum_Atlas_55kW Normal \n************************** \nPressure_Vacuum_Atlas_55kW = '.. wordValue_Pressure_Vacuum_Atlas_55kW..'mbar\n(Min = -690 mbar)'
+        getMessageUrl(message_Pressure_Vacuum_Atlas_55kW)
+        print("Notification pushed of dismissing alarm,"..wordValue_Pressure_Vacuum_Atlas_55kW_int)
+    end
+    tempWord_Pressure_Vacuum_Atlas_55kW = wordValue_Pressure_Vacuum_Atlas_55kW_int----Prevent monitoring values from continuous being sent to the platform
+    
+     ------------
+    --pressure_keaser
+    ------------
+    if addr_getfloat("@pressure_keaser") ~= nil then
+        wordValue_pressure_keaser = string.format("%.2f",addr_getfloat("@pressure_keaser"))
+        wordValue_pressure_keaser_int = addr_getfloat("@pressure_keaser")
+    end
+    local message_pressure_keaser = ''
+    --print("wordValue_pressure_keaser_int = ",wordValue_pressure_keaser_int)
+    if wordValue_pressure_keaser_int < 3.2 and wordValue_pressure_keaser_int ~= tempWord_pressure_keaser and tempWord_pressure_keaser >= 3.2 then
+        message_pressure_keaser = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS pressure_keaser Alarm \n************************** \nwordValue_pressure_keaser = '.. wordValue_pressure_keaser..'bar\n(Min = 3.2 bar)'
+        getMessageUrl(message_pressure_keaser)
+        print("Notification PATHUMTHANI GLASS pushed of triggering alarm,"..wordValue_pressure_keaser_int)
+    elseif wordValue_pressure_keaser_int > 3.2 and wordValue_pressure_keaser_int ~= tempWord_pressure_keaser and tempWord_pressure_keaser <= 3.2 then
+        message_pressure_keaser = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS pressure_keaser Normal \n************************** \nwordValue_pressure_keaser = '.. wordValue_pressure_keaser..'bar\n(Min = 3.2 bar)'
+        getMessageUrl(message_pressure_keaser)
+        print("Notification pushed of dismissing alarm,"..wordValue_pressure_keaser_int)
+    end
+    tempWord_pressure_keaser = wordValue_pressure_keaser_int----Prevent monitoring values from continuous being sent to the platform
+    
+         ------------
+    --pressure_atlas
+    ------------
+    if addr_getfloat("@pressure_atlas") ~= nil then
+        wordValue_pressure_atlas = string.format("%.2f",addr_getfloat("@pressure_atlas"))
+        wordValue_pressure_atlas_int = addr_getfloat("@pressure_atlas")
+    end
+    local message_pressure_atlas = ''
+    --print("wordValue_pressure_atlas_int = ",wordValue_pressure_atlas_int)
+    if wordValue_pressure_atlas_int < 3.2 and wordValue_pressure_atlas_int ~= tempWord_pressure_atlas and tempWord_pressure_atlas >= 3.2 then
+        message_pressure_atlas = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS pressure_atlas Alarm \n************************** \nwordValue_pressure_atlas = '.. wordValue_pressure_atlas..'bar\n(Min = 3.2 bar)'
+        getMessageUrl(message_pressure_atlas)
+        print("Notification PATHUMTHANI GLASS pushed of triggering alarm,"..wordValue_pressure_atlas_int)
+    elseif wordValue_pressure_atlas_int > 3.2 and wordValue_pressure_atlas_int ~= tempWord_pressure_atlas and tempWord_pressure_atlas <= 3.2 then
+        message_pressure_atlas = '\nDataTime : \n'..dtime..'\n************************** \nPATHUMTHANI GLASS pressure_atlas Normal \n************************** \nwordValue_pressure_atlas = '.. wordValue_pressure_atlas..'bar\n(Min = 3.2 bar)'
+        getMessageUrl(message_pressure_atlas)
+        print("Notification pushed of dismissing alarm,"..wordValue_pressure_atlas_int)
+    end
+    tempWord_pressure_atlas = wordValue_pressure_atlas_int----Prevent monitoring values from continuous being sent to the platform
+    
+end
