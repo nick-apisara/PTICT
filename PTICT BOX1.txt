@@ -6,7 +6,7 @@ local CDP9backup = 0
 local CDP10backup = 0
 local CDP12backup = 0
 
-local LineToken = "8Nfl/3kIHCspTEaAbbGcNTAkuhY8iC9JPkNJCutHNf8m0oTLxVQWQsaSMLzhXbdcCOGAGQFe6EUrg/tOgeUfJ1w2gdCxaSkEQMv3j8V2XhMQBeijsba3df2uY3l6T7y49RBRhzazBdHQLaa/gD/o8AdB04t89/1O/w1cDnyilFU="
+local LineToken = *LineToken*
 local https = require("https")
 local json = require("json")
 local ltn12 = require("ltn12")
@@ -62,7 +62,7 @@ function PTICT.main()
 --   print(CT1)
   if CT1 ~= CT1backup and CT1 < 1 then
     strMessage = {
-        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["to"]=*Groupid*,
         ["messages"]={{
              ["type"]="text",
              ["text"]="CT1\n DateTime :"..dtime2.."\n ALARM: STOP"
