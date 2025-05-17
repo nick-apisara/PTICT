@@ -1,0 +1,87 @@
+local Aer2DO2Bak
+local Aer1DO3Bak
+
+local LineToken = "LineToken"
+local https = require("https")
+local json = require("json")
+local ltn12 = require("ltn12")
+
+-- Send http.get request and return response result
+function getHttpsUrl(url,header,reqbody)
+    local body = {}
+    local bodyJson = json.encode(body)
+    local result_table, code, headers, status = https.request{
+        method = "POST",
+        url = url,
+        source = ltn12.source.string(reqbody),
+        headers = header,
+        sink = ltn12.sink.table(body)
+   }
+    print("code:"..code)
+    if code~= 200 then
+        return
+    else
+        return body
+    end
+end
+
+function getMessageUrl(lineMessage)
+    local url = "https://api.line.me/v2/bot/message/push"
+    local strMSG = lineMessage
+    local reqMess = json.encode(strMSG)
+    local headers = 
+                {
+                        ["Authorization"] = "Bearer "..LineToken,
+                        ["Content-Type"] = "application/json",
+                        ["Content-Length"] = #reqMess
+                }
+    print("Get the link:"..url)
+    print(reqMess)
+    getHttpsUrl(url, headers, reqMess)
+end
+
+function round(x)
+  return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
+end
+
+
+function PTICT.main()
+    
+  year = os.date("%Y")
+  month = os.date("%m")
+  day = os.date("%d")
+  hour = os.date("%H")
+  minute = os.date("%M")
+  second = os.date("%S")
+  dtime = day.."-"..month.."-"..year.." "..hour..":"..minute..":"..second
+  
+  local dtime2 = dtime
+  
+local Aer2DO2 = addr_getfloat("@Aerator2_DO2")
+-- print("Aer2DO2 is.."..round(Aer2DO2))
+ if round(Aer2DO2) ~= Aer2DO2Bak and round(Aer2DO2) < 1 then
+    strMessage = {
+        ["to"]="GroupId",
+        ["messages"]={{
+             ["type"]="text",
+             ["text"]="DO บ่อ2\n DateTime :"..dtime2.."\n ALARM: STOP"
+            }}
+      }
+    Aer2DO2Bak = round(Aer2DO2)
+    getMessageUrl(strMessage)
+    print("Aerator2 DO2 value is "..Aer2DO2Bak)
+  end
+local Aer1DO3 = addr_getfloat("@Aerator1_DO3")
+  if round(Aer1DO3) ~= Aer1DO3Bak and round(Aer1DO3) < 1 then
+    strMessage = {
+        ["to"]="GroupId",
+        ["messages"]={{
+             ["type"]="text",
+             ["text"]="DO บ่อ3\n DateTime :"..dtime2.."\n ALARM: STOP"
+            }}
+      }
+    Aer1DO3Bak = round(Aer1DO3)
+    getMessageUrl(strMessage)
+    print("Aerator1 DO3 value is "..Aer1DO3Bak)
+  end
+end
