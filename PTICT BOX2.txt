@@ -4,7 +4,7 @@ local CDP9backup = 0
 local CDP10backup = 0
 local CDP12backup = 0
 
-local LineToken = "8Nfl/3kIHCspTEaAbbGcNTAkuhY8iC9JPkNJCutHNf8m0oTLxVQWQsaSMLzhXbdcCOGAGQFe6EUrg/tOgeUfJ1w2gdCxaSkEQMv3j8V2XhMQBeijsba3df2uY3l6T7y49RBRhzazBdHQLaa/gD/o8AdB04t89/1O/w1cDnyilFU="
+local LineToken = "LineToken"
 local https = require("https")
 local json = require("json")
 local ltn12 = require("ltn12")
@@ -58,7 +58,7 @@ function PTICT2.main()
   local CT3 = addr_getword("@Power_total_CT3")
   if CT3 ~= CT3backup and CT3 < 1 then
     strMessage = {
-        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["to"]="Groupid",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CT3\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -71,7 +71,7 @@ function PTICT2.main()
   local CDP9 = addr_getword("@Power_total_CDP9")
   if CDP9 ~= CDP9backup and CDP9 < 1 then
     strMessage = {
-        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["to"]="Groupid",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CDP9\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -84,7 +84,7 @@ function PTICT2.main()
   local CDP10 = addr_getword("@Power_total_CDP10")
   if CDP10 ~= CDP10backup and CDP10 < 1 then
     strMessage = {
-        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["to"]="Groupid",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CDP10\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -97,7 +97,7 @@ function PTICT2.main()
   local CDP12 = addr_getword("@Power_total_CDP12")
   if CDP12 ~= CDP12backup and CDP12 < 1 then
     strMessage = {
-        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["to"]="Groupid",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CDP12\n DateTime :"..dtime2.."\n ALARM: STOP"
