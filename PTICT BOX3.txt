@@ -1,0 +1,118 @@
+
+local DPM1backup
+local DPM2backup
+local DPM3backup
+local DPM_VSDbackup
+
+local LineToken = "LineToken"
+local https = require("https")
+local json = require("json")
+local ltn12 = require("ltn12")
+
+-- Send http.get request and return response result
+function getHttpsUrl(url,header,reqbody)
+    local body = {}
+    local bodyJson = json.encode(body)
+    local result_table, code, headers, status = https.request{
+        method = "POST",
+        url = url,
+        source = ltn12.source.string(reqbody),
+        headers = header,
+        sink = ltn12.sink.table(body)
+   }
+    print("code:"..code)
+    if code~= 200 then
+        return
+    else
+        return body
+    end
+end
+
+function getMessageUrl(lineMessage)
+    local url = "https://api.line.me/v2/bot/message/push"
+    local strMSG = lineMessage
+    local reqMess = json.encode(strMSG)
+    local headers = 
+                {
+                        ["Authorization"] = "Bearer "..LineToken,
+                        ["Content-Type"] = "application/json",
+                        ["Content-Length"] = #reqMess
+                }
+    print("Get the link:"..url)
+    print(reqMess)
+    getHttpsUrl(url, headers, reqMess)
+end
+
+function round(x)
+  return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
+end
+
+function PTICT.main()
+  year = os.date("%Y")
+  month = os.date("%m")
+  day = os.date("%d")
+  hour = os.date("%H")
+  minute = os.date("%M")
+  second = os.date("%S")
+  dtime = day.."-"..month.."-"..year.." "..hour..":"..minute..":"..second
+  
+  local dtime2 = dtime
+    -- print ("datetime = "..dtime)
+-- Check condition DPM1
+  local DPM1 = addr_getint("@Power_total_DPM1",0,2)*0.00001
+  if round(DPM1) ~= DPM1backup and round(DPM1) < 1 then
+    strMessage = {
+        ["to"]="Group",
+        ["messages"]={{
+             ["type"]="text",
+             ["text"]="Vacuum Pump\n DateTime :"..dtime2.."\n ALARM: STOP"
+            }}
+      }
+    DPM1backup = round(DPM1)
+    getMessageUrl(strMessage)
+    print("DPM1 Alarm value is "..DPM1)
+  end 
+-- Check condition DPM2 0=Alarm
+  local DPM2 = addr_getint("@Power_total_DPM2",0,2)*0.00001
+
+  if round(DPM2) ~= DPM2backup and  round(DPM2) < 1 then
+    strMessage = {
+        ["to"]="Group",
+        ["messages"]={{
+             ["type"]="text",
+             ["text"]="Atlas 4 bar\n DateTime :"..dtime2.."\n ALARM: STOP"
+            }}
+      }
+    DPM2backup =  round(DPM2)
+    getMessageUrl(strMessage)
+    print("DPM2 Alarm value is "..DPM2backup)
+  end
+ -- Check condition DPM3
+  local DPM3 = addr_getint("@Power_total_DPM3",0,2)*0.00001
+  if round(DPM3) ~= DPM3backup and round(DPM3) < 1 then
+    strMessage = {
+        ["to"]="Group",
+        ["messages"]={{
+             ["type"]="text",
+             ["text"]="Kaeser 6 bar\n DateTime :"..dtime2.."\n ALARM: STOP"
+            }}
+      }
+    DPM3backup = round(DPM3)
+    getMessageUrl(strMessage)
+    print("DPM3 Alarm value is "..DPM3)
+  end
+ -- Check condition DPM_VSD
+  local DPM_VSD = addr_getint("@Power_total_DPM_VSD",0,2)*0.00001
+  if round(DPM_VSD) ~= DPM_VSDbackup and round(DPM_VSD) < 1 then
+    strMessage = {
+        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["messages"]={{
+             ["type"]="text",
+             ["text"]="Cooling Pump\n DateTime :"..dtime2.."\n ALARM: STOP"
+            }}
+      }
+    DPM_VSDbackup = round(DPM_VSD)
+    getMessageUrl(strMessage)
+    print("DPM_VSD Alarm value is "..DPM_VSD)
+  end
+end
