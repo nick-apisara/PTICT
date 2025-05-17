@@ -1,0 +1,101 @@
+local CT1backup = 0
+local CT2backup = 0
+local CDP11backup = 0
+local CT3backup = 0
+local CDP9backup = 0
+local CDP10backup = 0
+local CDP12backup = 0
+
+local LineToken = "8Nfl/3kIHCspTEaAbbGcNTAkuhY8iC9JPkNJCutHNf8m0oTLxVQWQsaSMLzhXbdcCOGAGQFe6EUrg/tOgeUfJ1w2gdCxaSkEQMv3j8V2XhMQBeijsba3df2uY3l6T7y49RBRhzazBdHQLaa/gD/o8AdB04t89/1O/w1cDnyilFU="
+local https = require("https")
+local json = require("json")
+local ltn12 = require("ltn12")
+
+-- Send http.get request and return response result
+function getHttpsUrl(url,header,reqbody)
+    local body = {}
+    local bodyJson = json.encode(body)
+    local result_table, code, headers, status = https.request{
+        method = "POST",
+        url = url,
+        source = ltn12.source.string(reqbody),
+        headers = header,
+        sink = ltn12.sink.table(body)
+   }
+    print("code:"..code)
+    if code~= 200 then
+        return
+    else
+        return body
+    end
+end
+
+function getMessageUrl(lineMessage)
+    local url = "https://api.line.me/v2/bot/message/push"
+    local strMSG = lineMessage
+    local reqMess = json.encode(strMSG)
+    local headers = 
+                {
+                        ["Authorization"] = "Bearer "..LineToken,
+                        ["Content-Type"] = "application/json",
+                        ["Content-Length"] = #reqMess
+                }
+    print("Get the link:"..url)
+    print(reqMess)
+    getHttpsUrl(url, headers, reqMess)
+end
+
+function PTICT.main()
+  year = os.date("%Y")
+  month = os.date("%m")
+  day = os.date("%d")
+  hour = os.date("%H")
+  minute = os.date("%M")
+  second = os.date("%S")
+  dtime = day.."-"..month.."-"..year.." "..hour..":"..minute..":"..second
+  
+  local dtime2 = dtime
+    -- print ("datetime = "..dtime)
+    
+-- Check condition CT1
+  local CT1 = addr_getword("@Power_total_CT1")
+--   print(CT1)
+  if CT1 ~= CT1backup and CT1 < 1 then
+    strMessage = {
+        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["messages"]={{
+             ["type"]="text",
+             ["text"]="CT1\n DateTime :"..dtime2.."\n ALARM: STOP"
+            }}
+      }
+    getMessageUrl(strMessage)
+    print("CT1 Alarm value is "..CT1)
+  end 
+-- Check condition CT2
+  local CT2 = addr_getword("@Power_total_CT2")
+  if CT2 ~= CT2backup and CT2 < 1 then
+    strMessage = {
+        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["messages"]={{
+             ["type"]="text",
+             ["text"]="CT2\n DateTime :"..dtime2.."\n ALARM: STOP"
+            }}
+      }
+    getMessageUrl(strMessage)
+    print("CT2 Alarm value is "..CT2)
+  end 
+-- Check condition CDP11
+  local CDP11 = addr_getword("@Power_total_CDP11")
+  if CDP11 ~= CDP11backup and CDP11 < 1 then
+    strMessage = {
+        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["messages"]={{
+             ["type"]="text",
+             ["text"]="CDP11\n DateTime :"..dtime2.."\n ALARM: STOP"
+            }}
+      }
+    getMessageUrl(strMessage)
+    print("CDP11 Alarm value is "..CDP11)
+  end 
+
+end
