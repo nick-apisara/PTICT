@@ -4,7 +4,7 @@ local DPM2backup
 local DPM3backup
 local DPM_VSDbackup
 
-local LineToken = "LineToken"
+local LineToken = ""
 local https = require("https")
 local json = require("json")
 local ltn12 = require("ltn12")
@@ -62,7 +62,7 @@ function PTICT.main()
   local DPM1 = addr_getint("@Power_total_DPM1",0,2)*0.00001
   if round(DPM1) ~= DPM1backup and round(DPM1) < 1 then
     strMessage = {
-        ["to"]="Group",
+        ["to"]="",
         ["messages"]={{
              ["type"]="text",
              ["text"]="Vacuum Pump\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -77,7 +77,7 @@ function PTICT.main()
 
   if round(DPM2) ~= DPM2backup and  round(DPM2) < 1 then
     strMessage = {
-        ["to"]="Group",
+        ["to"]="",
         ["messages"]={{
              ["type"]="text",
              ["text"]="Atlas 4 bar\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -91,7 +91,7 @@ function PTICT.main()
   local DPM3 = addr_getint("@Power_total_DPM3",0,2)*0.00001
   if round(DPM3) ~= DPM3backup and round(DPM3) < 1 then
     strMessage = {
-        ["to"]="Group",
+        ["to"]="",
         ["messages"]={{
              ["type"]="text",
              ["text"]="Kaeser 6 bar\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -105,7 +105,7 @@ function PTICT.main()
   local DPM_VSD = addr_getint("@Power_total_DPM_VSD",0,2)*0.00001
   if round(DPM_VSD) ~= DPM_VSDbackup and round(DPM_VSD) < 1 then
     strMessage = {
-        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["to"]="",
         ["messages"]={{
              ["type"]="text",
              ["text"]="Cooling Pump\n DateTime :"..dtime2.."\n ALARM: STOP"
