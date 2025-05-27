@@ -4,7 +4,7 @@ local CDP9backup
 local CDP10backup
 local CDP12backup
 
-local LineToken = "LineToken"
+local LineToken = 
 local https = require("https")
 local json = require("json")
 local ltn12 = require("ltn12")
@@ -62,7 +62,7 @@ function PTICT2.main()
   local CT3 = addr_getint("@Power_total_CT3",0,2)*0.00001
   if round(CT3) ~= CT3backup and round(CT3) < 1 then
     strMessage = {
-        ["to"]="GroupId",
+        ["to"]="",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CT3\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -76,7 +76,7 @@ function PTICT2.main()
   local CDP9 = addr_getint("@Power_total_CDP9",0,2)*0.00001
   if round(CDP9) ~= CDP9backup and round(CDP9) < 1 then
     strMessage = {
-        ["to"]="GroupId",
+        ["to"]="",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CDP9\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -90,7 +90,7 @@ function PTICT2.main()
   local CDP10 = addr_getint("@Power_total_CDP10",0,2)*0.00001
   if round(CDP10) ~= CDP10backup and round(CDP10) < 1 then
     strMessage = {
-        ["to"]="GroupId",
+        ["to"]="",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CDP10\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -104,7 +104,7 @@ function PTICT2.main()
   local CDP12 = addr_getint("@Power_total_CDP12",0,2)*0.00001
   if round(CDP12) ~= CDP12backup and round(CDP12) < 1 then
     strMessage = {
-        ["to"]="GroupId",
+        ["to"]="",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CDP12\n DateTime :"..dtime2.."\n ALARM: STOP"
