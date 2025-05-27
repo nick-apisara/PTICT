@@ -66,7 +66,7 @@ function PTICT.main()
 --   print(CT1)
   if round(CT1) ~= CT1backup and round(CT1) < 1 then
     strMessage = {
-        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["to"]="",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CT1\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -80,7 +80,7 @@ function PTICT.main()
   local CT2 = addr_getint("@Power_total_CT2",0,2)*0.00001
   if round(CT2) ~= CT2backup and round(CT2) < 1 then
     strMessage = {
-        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["to"]="",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CT2\n DateTime :"..dtime2.."\n ALARM: STOP"
@@ -94,7 +94,7 @@ function PTICT.main()
   local CDP11 = addr_getint("@Power_total_CDP11",0,2)*0.00001
   if round(CDP11) ~= CDP11backup and round(CDP11) < 1 then
     strMessage = {
-        ["to"]="C2d5fda07bb7151c4168696cf64fc4c22",
+        ["to"]="",
         ["messages"]={{
              ["type"]="text",
              ["text"]="CDP11\n DateTime :"..dtime2.."\n ALARM: STOP"
