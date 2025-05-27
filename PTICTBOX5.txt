@@ -1,7 +1,10 @@
 local Aer2DO2Bak
 local Aer1DO3Bak
 
-local LineToken = "LineToken"
+local Cnt1 = 0
+local Cnt2 = 0
+
+local LineToken = ""
 local https = require("https")
 local json = require("json")
 local ltn12 = require("ltn12")
@@ -57,31 +60,66 @@ function PTICT.main()
   
   local dtime2 = dtime
   
-local Aer2DO2 = addr_getfloat("@Aerator2_DO2")
--- print("Aer2DO2 is.."..round(Aer2DO2))
- if round(Aer2DO2) ~= Aer2DO2Bak and round(Aer2DO2) < 1 then
-    strMessage = {
-        ["to"]="GroupId",
-        ["messages"]={{
+-- local Aer2DO2 = addr_getfloat("@Aerator2_DO2")
+local Aer2DO2 = string.format( "%.1f",addr_getfloat("@Aerator2_DO2"))
+print(string.format( "%.1f",Aer2DO2))
+
+ if Aer2DO2 ~= Aer2DO2Bak and Aer2DO2 < "1.5" then
+     if Cnt1 == 0 then 
+        strMessage = {
+            ["to"]="",
+            ["messages"]={{
              ["type"]="text",
-             ["text"]="DO บ่อ2\n DateTime :"..dtime2.."\n ALARM: STOP"
+             ["text"]="DO บ่อ2\n DateTime :"..dtime2.."\n ALARM: DO < 2.0\n Value is "..string.format( "%.1f",Aer2DO2)
             }}
-      }
-    Aer2DO2Bak = round(Aer2DO2)
-    getMessageUrl(strMessage)
-    print("Aerator2 DO2 value is "..Aer2DO2Bak)
+        }
+        Aer2DO2Bak = Aer2DO2
+        getMessageUrl(strMessage)
+        print("Aerator2 DO2 value is "..Aer2DO2Bak)
+        Cnt1 = Cnt1 + 1
+     elseif Cnt1 == 3600 then
+        Cnt1 = 0
+     else 
+        Cnt1 = Cnt1 + 1
+     end
+    --  print("Cnt1 = "..Cnt1)
+  elseif Aer2DO2 == Aer2DO2Bak then
+     if Cnt1 == 3600 then
+         Cnt1 = 0 
+     else
+         Cnt1 = Cnt1 + 1
+     end
   end
-local Aer1DO3 = addr_getfloat("@Aerator1_DO3")
-  if round(Aer1DO3) ~= Aer1DO3Bak and round(Aer1DO3) < 1 then
-    strMessage = {
-        ["to"]="GroupId",
-        ["messages"]={{
+-- print("Cnt DO บ่อ2 = "..Cnt1)
+
+local Aer1DO3 = string.format( "%.1f",addr_getfloat("@Aerator1_DO3"))
+print(string.format( "%.1f",Aer1DO3))
+
+ if Aer1DO3 ~= Aer1DO3Bak and Aer1DO3 < "1.5" then
+     if Cnt2 == 0 then 
+        strMessage = {
+            ["to"]="",
+            ["messages"]={{
              ["type"]="text",
-             ["text"]="DO บ่อ3\n DateTime :"..dtime2.."\n ALARM: STOP"
+             ["text"]="DO บ่อ3\n DateTime :"..dtime2.."\n ALARM: DO < 2.0\n Value is "..string.format( "%.1f",Aer1DO3)
             }}
-      }
-    Aer1DO3Bak = round(Aer1DO3)
-    getMessageUrl(strMessage)
-    print("Aerator1 DO3 value is "..Aer1DO3Bak)
-  end
+        }
+        Aer1DO3Bak = Aer1DO3
+        getMessageUrl(strMessage)
+        print("Aerator2 DO2 value is "..Aer1DO3Bak)
+        Cnt2 = Cnt2 + 1
+     elseif Cnt2 == 3600 then
+        Cnt2 = 0
+     else 
+        Cnt2 = Cnt2 + 1
+     end
+    --  print("Cnt1 = "..Cnt1)
+  elseif Aer1DO3 == Aer1DO3Bak then
+     if Cnt2 == 3600 then
+         Cnt2 = 0 
+     else
+         Cnt2 = Cnt2 + 1
+     end
+end
+
 end
