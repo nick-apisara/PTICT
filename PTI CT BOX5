@@ -4,7 +4,7 @@ local Aer1DO3Bak
 local Cnt1 = 0
 local Cnt2 = 0
 
-local LineToken = ""
+local LineToken = ".
 local https = require("https")
 local json = require("json")
 local ltn12 = require("ltn12")
@@ -47,6 +47,11 @@ function round(x)
   return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
 end
 
+local temptime = "00"
+
+local flagh8 = 0
+local flagh16 = 0
+local flagh24 = 0
 
 function PTICT.main()
     
@@ -60,66 +65,66 @@ function PTICT.main()
   
   local dtime2 = dtime
   
+  if hour == "08" and minute == "00" and temptime ~= hour then
+     flagh8 = 1 
+  end
+
+  if hour == "16" and minute == "00" and temptime ~= hour then
+     flagh16 = 1 
+  end
+  
+  if hour == "24" and minute == "00" and temptime ~= hour then
+     flagh24 = 1 
+  end
+
+    print("flagh8=="..flagh8)
+    print("flagh16=="..flagh16)
+    print("flagh24=="..flagh24)
+
 -- local Aer2DO2 = addr_getfloat("@Aerator2_DO2")
 local Aer2DO2 = string.format( "%.1f",addr_getfloat("@Aerator2_DO2"))
 print(string.format( "%.1f",Aer2DO2))
 
- if Aer2DO2 ~= Aer2DO2Bak and Aer2DO2 < "1.5" then
-     if Cnt1 == 0 then 
+  if Aer2DO2 ~= Aer2DO2Bak and Aer2DO2 < "2.5" then
+      if flagh8 == 1 or flagh24 == 1 or flagh24 == 1 then
         strMessage = {
             ["to"]="",
             ["messages"]={{
              ["type"]="text",
-             ["text"]="DO บ่อ2\n DateTime :"..dtime2.."\n ALARM: DO < 2.0\n Value is "..string.format( "%.1f",Aer2DO2)
+             ["text"]="DO บ่อ2\n DateTime :"..dtime2.."\n ALARM: DO < 2.5\n Value is "..string.format( "%.1f",Aer2DO2)
             }}
         }
         Aer2DO2Bak = Aer2DO2
         getMessageUrl(strMessage)
-        print("Aerator2 DO2 value is "..Aer2DO2Bak)
-        Cnt1 = Cnt1 + 1
-     elseif Cnt1 == 3600 then
-        Cnt1 = 0
-     else 
-        Cnt1 = Cnt1 + 1
+        print("Aerator2 DO2 value is "..Aer2DO2Bak)  
+        
      end
-    --  print("Cnt1 = "..Cnt1)
-  elseif Aer2DO2 == Aer2DO2Bak then
-     if Cnt1 == 3600 then
-         Cnt1 = 0 
-     else
-         Cnt1 = Cnt1 + 1
-     end
+     flagh8 = 0
+     flagh16 = 0
+     flagh24 = 0
   end
--- print("Cnt DO บ่อ2 = "..Cnt1)
+      
 
 local Aer1DO3 = string.format( "%.1f",addr_getfloat("@Aerator1_DO3"))
 print(string.format( "%.1f",Aer1DO3))
 
- if Aer1DO3 ~= Aer1DO3Bak and Aer1DO3 < "1.5" then
-     if Cnt2 == 0 then 
+ if Aer1DO3 ~= Aer1DO3Bak and Aer1DO3 < "2.5" then
+    if flagh8 == 1 or flagh24 == 1 or flagh24 == 1 then
         strMessage = {
             ["to"]="",
             ["messages"]={{
              ["type"]="text",
-             ["text"]="DO บ่อ3\n DateTime :"..dtime2.."\n ALARM: DO < 2.0\n Value is "..string.format( "%.1f",Aer1DO3)
+             ["text"]="DO บ่อ3\n DateTime :"..dtime2.."\n ALARM: DO < 2.5\n Value is "..string.format( "%.1f",Aer1DO3)
             }}
         }
         Aer1DO3Bak = Aer1DO3
         getMessageUrl(strMessage)
-        print("Aerator2 DO2 value is "..Aer1DO3Bak)
-        Cnt2 = Cnt2 + 1
-     elseif Cnt2 == 3600 then
-        Cnt2 = 0
-     else 
-        Cnt2 = Cnt2 + 1
-     end
-    --  print("Cnt1 = "..Cnt1)
-  elseif Aer1DO3 == Aer1DO3Bak then
-     if Cnt2 == 3600 then
-         Cnt2 = 0 
-     else
-         Cnt2 = Cnt2 + 1
-     end
-end
+        print("Aerator1 DO3 value is "..Aer1DO3Bak)  
+        
+    end
+     flagh8 = 0
+     flagh16 = 0
+     flagh24 = 0
+ end
 
 end
